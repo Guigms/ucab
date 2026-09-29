@@ -1,7 +1,27 @@
+'use client'
 import './globals.css'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+
+  // Se estiver na página de login, renderiza apenas o conteúdo sem a sidebar
+  if (pathname === '/login') {
+    return (
+      <html lang="pt-BR">
+        <body className="bg-gray-50 text-gray-900 h-screen overflow-hidden">
+          {children}
+        </body>
+      </html>
+    )
+  }
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    window.location.href = '/login'
+  }
+
   return (
     <html lang="pt-BR">
       <body className="bg-gray-50 text-gray-900 flex h-screen overflow-hidden">
@@ -22,19 +42,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             {/* Navegação */}
             <nav className="space-y-1">
-              <Link href="/" className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-stone-900 text-white font-medium text-sm">
+              <Link href="/" className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm ${pathname === '/' ? 'bg-stone-900 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
                 📊 Dashboard
               </Link>
-              <Link href="/produtos" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 font-medium text-sm">
+              <Link href="/produtos" className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm ${pathname === '/produtos' ? 'bg-stone-900 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
                 📦 Produtos
               </Link>
-              <Link href="/compras" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 font-medium text-sm">
+              <Link href="/compras" className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm ${pathname === '/compras' ? 'bg-stone-900 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
                 🛍️ Compras
               </Link>
-              <Link href="/vendas" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 font-medium text-sm">
+              <Link href="/vendas" className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm ${pathname === '/vendas' ? 'bg-stone-900 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
                 💳 Vendas
               </Link>
-              <Link href="/relatorios" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 font-medium text-sm">
+              <Link href="/relatorios" className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm ${pathname === '/relatorios' ? 'bg-stone-900 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
                 📈 Relatórios
               </Link>
             </nav>
@@ -51,7 +71,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-[11px] text-gray-400 truncate">admin@loja.com</p>
               </div>
             </div>
-            <button className="w-full flex items-center justify-center gap-2 border border-gray-200 py-2 rounded-xl text-xs font-medium text-gray-600 hover:bg-gray-50">
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 border border-gray-200 py-2 rounded-xl text-xs font-medium text-gray-600 hover:bg-gray-50 cursor-pointer"
+            >
               🚪 Sair
             </button>
           </div>

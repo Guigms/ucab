@@ -53,3 +53,11 @@ model ItemVenda {
   valorUnit  Float   // Preço de venda unitário puxado do cadastro
   subtotal   Float   // quantidade * valorUnit
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  senha     String   // Senha (pode ser texto plano ou hash simples para teste)
+  nome      String   @default("Administradora")
+  createdAt DateTime @default(now())
+}

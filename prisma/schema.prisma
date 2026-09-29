@@ -1,0 +1,55 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Produto {
+  id          Int         @id @default(autoincrement())
+  nome        String
+  tamanho     String
+  cor         String
+  sku         String?
+  precoCusto  Float       @default(0)
+  precoVenda  Float       @default(0)
+  estoque     Float       @default(0)
+  compras     Compra[]
+  itens       ItemVenda[]
+  createdAt   DateTime    @default(now())
+}
+
+model Compra {
+  id          Int      @id @default(autoincrement())
+  produtoId   Int
+  produto     Produto  @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+  quantidade  Float
+  custoUnit   Float
+  total       Float
+  fornecedor  String?
+  dataCompra  DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Venda {
+  id           Int         @id @default(autoincrement())
+  cliente      String?
+  valorTotal   Float
+  formaPagto   String      @default("PIX")
+  dataVenda    DateTime    @default(now())
+  itens        ItemVenda[]
+  createdAt    DateTime    @default(now())
+}
+
+model ItemVenda {
+  id         Int     @id @default(autoincrement())
+  vendaId    Int
+  venda      Venda   @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+  produtoId  Int
+  produto    Produto @relation(fields: [produtoId], references: [id])
+  quantidade Float
+  valorUnit  Float   // Preço de venda unitário puxado do cadastro
+  subtotal   Float   // quantidade * valorUnit
+}

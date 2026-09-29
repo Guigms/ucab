@@ -1,27 +1,25 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
 
 export async function POST(request: Request) {
   try {
     const { email, senha } = await request.json()
 
-    // Busca o usuário no banco
-    const user = await prisma.user.findUnique({
-      where: { email },
-    })
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@loja.com'
+    const adminSenha = process.env.ADMIN_SENHA || '123'
 
-    if (!user || user.senha !== senha) {
-      return NextResponse.json({ error: 'E-mail ou senha inválidos' }, { status: 401 })
+    // Valida se o e-mail e a senha batem com o .env
+    if (email !== adminEmail || senha !== adminSenha) {
+      return NextResponse.json({ error: 'E-mail ou palavra-passe inválidos' }, { status: 401 })
     }
 
-    // Define um cookie de autenticação simples
+    // Define o cookie de sessão por 1 semana
     (await
-          // Define um cookie de autenticação simples
-          cookies()).set('session_token', user.email, {
+          // Define o cookie de sessão por 1 semana
+          cookies()).set('session_token', adminEmail, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 semana
+      maxAge: 60 * 60 * 24 * 7,
       path: '/',
     })
 

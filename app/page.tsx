@@ -1,16 +1,9 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
-  const cookieStore = cookies()
-  const token = (await cookieStore).get('session_token')?.value
-
-  if (!token) {
-    redirect('/login')
-  }
-
   let totalProdutos = 0
   let totalCompras = 0
   let totalVendas = 0
@@ -39,8 +32,8 @@ export default async function DashboardPage() {
       </div>
 
       {erroBanco && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-6 text-xs font-semibold">
-          ⚠️ Aviso: Não foi possível conectar ao banco de dados remoto da HostGator. Verifique se a variável `DATABASE_URL` está configurada corretamente na Vercel e se as tabelas foram criadas.
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-2xl mb-6 text-xs font-semibold">
+          ⚠️ Aviso: O sistema está a correr mas encontrou dificuldades para ler o banco de dados remoto. Verifique se a variável `DATABASE_URL` está configurada na Vercel e se as tabelas foram criadas.
         </div>
       )}
 

@@ -11,14 +11,24 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Busca dados reais do banco de dados para a Dashboard
-  const totalProdutos = await prisma.produto.count()
-  const totalCompras = await prisma.compra.count()
-  const totalVendas = await prisma.venda.count()
+  let totalProdutos = 0
+  let totalCompras = 0
+  let totalVendas = 0
+  let valorEstoque = 0
+  let estoqueTotalPecas = 0
+  let erroBanco = false
 
-  const produtos = await prisma.produto.findMany()
-  const valorEstoque = produtos.reduce((acc, p) => acc + ((p.estoque || 0) * (p.precoCusto || 0)), 0)
-  const estoqueTotalPecas = produtos.reduce((acc, p) => acc + (p.estoque || 0), 0)
+  try {
+    totalProdutos = await prisma.produto.count()
+    totalCompras = await prisma.compra.count()
+    totalVendas = await prisma.venda.count()
+
+    const produtos = await prisma.produto.findMany()
+    valorEstoque = produtos.reduce((acc, p) => acc + ((p.estoque || 0) * (p.precoCusto || 0)), 0)
+    estoqueTotalPecas = produtos.reduce((acc, p) => acc + (p.estoque || 0), 0)
+  } catch (error) {
+    erroBanco = true
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -27,6 +37,12 @@ export default async function DashboardPage() {
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 mt-1">Dashboard</h2>
         <p className="text-sm text-gray-500">Métricas em tempo real do seu atelier e boutique.</p>
       </div>
+
+      {erroBanco && (
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-6 text-xs font-semibold">
+          ⚠️ Aviso: Não foi possível conectar ao banco de dados remoto da HostGator. Verifique se a variável `DATABASE_URL` está configurada corretamente na Vercel e se as tabelas foram criadas.
+        </div>
+      )}
 
       {/* Cartões de Indicadores */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

@@ -1,9 +1,20 @@
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
+  // 1. Verificação de Autenticação (Bloqueia quem não tem login)
+  const cookieStore = await cookies()
+  const token = cookieStore.get('session_token')?.value
+
+  if (!token) {
+    redirect('/login')
+  }
+
+  // 2. Carregamento dos dados do Dashboard
   let totalProdutos = 0
   let totalCompras = 0
   let totalVendas = 0
@@ -33,7 +44,7 @@ export default async function DashboardPage() {
 
       {erroBanco && (
         <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-2xl mb-6 text-xs font-semibold">
-          ⚠️ Aviso: O sistema está a correr mas encontrou dificuldades para ler o banco de dados remoto. Verifique se a variável `DATABASE_URL` está configurada na Vercel e se as tabelas foram criadas.
+          ⚠️ Aviso: O sistema está a correr mas encontrou dificuldades para ler o banco de dados remoto. Verifique a conexão.
         </div>
       )}
 

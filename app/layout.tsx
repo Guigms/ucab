@@ -100,7 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
               <div className="overflow-hidden">
                 <p className="text-xs font-bold text-gray-900 truncate">Administradora</p>
-                <p className="text-[11px] text-gray-400 truncate">admin@loja.com</p>
+                <p className="text-[11px] text-gray-400 truncate"></p>
               </div>
             </div>
             <button 

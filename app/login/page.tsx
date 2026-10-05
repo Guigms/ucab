@@ -37,7 +37,7 @@ export default function LoginPage() {
             A
           </div>
           <div>
-            <h1 className="font-bold text-sm leading-tight text-gray-900">Atelier</h1>
+            <h1 className="font-bold text-sm leading-tight text-gray-900">Use Choice</h1>
             <span className="text-xs text-gray-400 tracking-wider">GESTÃO</span>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function LoginPage() {
             type="submit"
             className="w-full bg-stone-900 hover:bg-stone-800 text-white p-3 rounded-xl text-xs font-bold transition-all shadow-sm mt-2"
           >
-            Aceder ao Painel
+            Entrar
           </button>
         </form>
 
